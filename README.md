@@ -11,7 +11,7 @@ features using a full modular ML pipeline.
 medical_cost_project/
 │
 ├── data/
-│   ├── raw/               
+│   ├── raw/
 │
 ├── models/                  ← Saved .pkl files for every model + best_model.pkl
 │
@@ -19,7 +19,7 @@ medical_cost_project/
 │   ├── pipeline.log         ← Rotating log file
 │   └── model_comparison.csv ← Metrics for all models
 │
-├── notebooks/  
+├── notebooks/
 │   └── Medical_Cost_Personal.ipynb     ← Original exploratory notebook
 │
 ├── src/
@@ -43,7 +43,7 @@ medical_cost_project/
 ```bash
 # 1. Create a virtual environment (recommended)
 python -m venv .venv
-source .venv/bin/activate 
+source .venv/bin/activate
 
 # 2. Install dependencies
 pip install -r requirements.txt
@@ -59,6 +59,7 @@ python train.py
 ```
 
 This will:
+
 1. Load and clean `data/raw/insurance.csv`
 2. Apply `MinMaxScaler` on numeric features and `OneHotEncoder` on categoricals
 3. Train 6 models: Linear Regression, Polynomial Regression, Gradient Boosting,
@@ -68,6 +69,7 @@ This will:
 6. Write all metrics to `logs/model_comparison.csv`
 
 **Sample output:**
+
 ```
 ══════════════════════════════════════════════════════════════════════
   MODEL COMPARISON RESULTS (sorted by R²)
@@ -85,11 +87,13 @@ This will:
 ## 🔮 Prediction
 
 ### Interactive mode
+
 ```bash
 python predict_cli.py
 ```
 
 ### Single patient via flags
+
 ```bash
 python predict_cli.py \
     --age 35 --sex male --bmi 28.5 \
@@ -97,11 +101,13 @@ python predict_cli.py \
 ```
 
 ### Batch prediction from CSV
+
 ```bash
 python predict_cli.py --csv path/to/new_patients.csv
 ```
 
 ### Programmatic use
+
 ```python
 from src.predict import predict_from_paths
 from config import PREPROCESSOR_PATH, BEST_MODEL_PATH
@@ -116,17 +122,52 @@ print(f"Predicted charge: ${charge[0]:,.2f}")
 
 ---
 
+## 📊 Streamlit Dashboard
+
+A full interactive dashboard is available in `app.py` for exploring data, predicting charges, and visualizing model insights.
+
+### Run the dashboard
+
+```bash
+streamlit run app.py
+```
+
+### What you can do
+
+- Explore dataset distributions and feature relationships
+- Enter custom patient inputs and view predicted charges
+- Compare risk tiers and monitor predicted values
+- See model performance details and dataset stats
+
+### Dashboard screenshots
+
+#### Home & Prediction
+![Dashboard Home](assests/dashboard-home.png)
+
+#### Data Explorer
+![Data Explorer](assests/data-explorer.png)
+
+#### Model Insights
+![Model Insights 1](assests/model-insights-1.png)
+
+#### Model Insights (Details)
+![Model Insights 2](assests/model-insights-2.png)
+
+> Tip: If you have not run training yet, the dashboard will use a fallback demo model, and the UI shows a warning.
+
+---
+
 ## 🧩 Dataset
 
-| Feature   | Type        | Description                                    |
-|-----------|-------------|------------------------------------------------|
-| age       | int         | Age of the primary beneficiary                 |
-| sex       | categorical | `male` / `female`                              |
-| bmi       | float       | Body mass index                                |
-| children  | int         | Number of dependents (0–5)                     |
-| smoker    | categorical | `yes` / `no`                                   |
-| region    | categorical | `southwest`, `southeast`, `northwest`, `northeast` |
-| **charges** | float (target) | Medical costs billed by the insurer      |
+| Feature     | Type           | Description                                        |
+| ----------- | -------------- | -------------------------------------------------- |
+| age         | int            | Age of the primary beneficiary                     |
+| sex         | categorical    | `male` / `female`                                  |
+| bmi         | float          | Body mass index                                    |
+| children    | int            | Number of dependents (0–5)                         |
+| smoker      | categorical    | `yes` / `no`                                       |
+| region      | categorical    | `southwest`, `southeast`, `northwest`, `northeast` |
+| **charges** | float (target) | Medical costs billed by the insurer                |
 
 1 338 records, no missing values.
 
@@ -135,6 +176,7 @@ print(f"Predicted charge: ${charge[0]:,.2f}")
 ## 🔧 Configuration
 
 Edit `config.py` to change:
+
 - File paths
 - Train/test split ratio
 - Model hyperparameters
@@ -143,11 +185,11 @@ Edit `config.py` to change:
 
 ## 📈 Model Summary
 
-| Model                | R²     | RMSE     | MAE      |
-|----------------------|--------|----------|----------|
-| XGBoost              | **0.8929** | 4 435.61 | 2 588.34 |
-| Gradient Boosting    | 0.8872 | 4 552.65 | 2 667.27 |
-| Random Forest        | 0.8842 | 4 613.13 | 2 537.00 |
-| Polynomial Regression| 0.8825 | 4 646.06 | 2 867.32 |
-| Linear Regression    | 0.8069 | 5 956.34 | 4 177.05 |
-| KNN                  | 0.8063 | 5 966.58 | 3 744.47 |
+| Model                 | R²         | RMSE     | MAE      |
+| --------------------- | ---------- | -------- | -------- |
+| XGBoost               | **0.8929** | 4 435.61 | 2 588.34 |
+| Gradient Boosting     | 0.8872     | 4 552.65 | 2 667.27 |
+| Random Forest         | 0.8842     | 4 613.13 | 2 537.00 |
+| Polynomial Regression | 0.8825     | 4 646.06 | 2 867.32 |
+| Linear Regression     | 0.8069     | 5 956.34 | 4 177.05 |
+| KNN                   | 0.8063     | 5 966.58 | 3 744.47 |
